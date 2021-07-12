@@ -6,7 +6,7 @@ This repository includes a test implementation of the Parallel ILU factorization
 ## Compiling and Running the Code
 Compilation is handled with a makefile in the `src/` directory. The code should be run on an HPC system for testing with multiple threads. If you are using an HPC system at TACC, then you can directly follow the instructions in the README included in the `src/` directory. If not, then you will have to change the include path in the makefile to reflect the location of Eigen installation on your system. Also, you may have to change the compiler to `g++` instead of `icpc`. 
 
-Once you have compiled the code successfully and are on a compute node, set the desired number of OpenMP threads with `export OMP_NUM_THREADS = ...` and run the executable `pilu.exe`. Timings will be displayed on standard output. 
+Once you have compiled the code successfully and are on a compute node, set the desired number of OpenMP threads with `export OMP_NUM_THREADS = ...` and run the executable `pilu.x`. Timings will be displayed on standard output. 
 
 ## References 
 Credit goes to Chow and Patel (2015) for the algorithm and the SuiteSparse Matrix collection for the test input matrix.
