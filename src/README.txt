@@ -12,11 +12,11 @@ module load intel
 module load eigen
 
 *Now navigate to the 'src' directory and run make
-    - This should create the executable pilu.x
+    - This should create the executable pilu
 
 *To run the code, enter an idev session, set the desired number of
  OpenMP threads with:
 
 export OMP_NUM_THREADS=...
 
- and execute with ./pilu.x
+ and execute with ./pilu

@@ -1,24 +1,54 @@
-####################################################################################################
-# Makefile for an implementation of the Parallel ILU algorithm described in Chow and Patel (2015)
-# "Fine-Grained Parallel Incomplete LU Factorization," SIAM J. Sci Comput., Vol. 37, No.2, C169-C193
-
-# C++ and the Eigen library are used for sparse linear algebra, OpenMP is used for parallelization
+################################################################################
+# Makefile for an implementation of a Parallel ILU algorithm
+#
+# Reference: Chow and Patel "Fine-Grained Parallel Incomplete LU Factorization"
+# SIAM J. Sci Comput 37.2 (2015), pp. 169-193
+#
+# C++ and the Eigen library are used for sparse linear algebra
+# OpenMP is used for parallelization
 # Source code is in the same directory as this Makefile
-
-# Developed by Marcos Botto Tornielli, May 2021
-####################################################################################################
+#
+# Developed by Marcos Botto Tornielli
+# (originally for an independent course project at UT Austin in May 2021)
+################################################################################
 
 # C++ Compiler
-CXX          = icpc
+CXX_LINUX = g++
+CXX_TACC  = icpc
+
+COMPILE_ENV = cluster
+
+ifeq ($(COMPILE_ENV), local)
+  CXX = $(CXX_LINUX)
+endif
+ifeq ($(COMPILE_ENV), cluster)
+  CXX = $(CXX_TACC)
+endif
 
 # Optional compiler flags, for debug and performance
-CXXFLAGS     = -g -Wall -O2 -xhost
+CXXFLAGS_BASE = -g -Wall -O2
+ifeq ($(COMPILE_ENV), local)
+  CXXFLAGS = $(CXXFLAGS_BASE)
+endif
+ifeq ($(COMPILE_ENV), cluster)
+  CXXFLAGS = $(CXXFLAGS_BASE) -xhost
+endif
+
+# Eigen include directory for installation on Ubuntu Linux with apt
+EIGEN_INC_LINUX=/usr/include/eigen3
 
 # Mandatory compiler flags, with optional ones appended
-ALL_CXXFLAGS = -I${TACC_EIGEN_INC} -qopenmp $(CXXFLAGS)
+ifeq ($(COMPILE_ENV), local)
+  ALL_CXXFLAGS = -I$(EIGEN_INC_LINUX) -fopenmp $(CXXFLAGS)
+endif
+ifeq ($(COMPILE_ENV), cluster)
+  ALL_CXXFLAGS = -I${TACC_EIGEN_INC} -qopenmp $(CXXFLAGS)
+endif
+
+.PHONY: clean
 
 pilu : pilu.cpp
-	$(CXX) $(ALL_CXXFLAGS) -o pilu.x pilu.cpp
+	$(CXX) $(ALL_CXXFLAGS) -o pilu pilu.cpp
 
 clean : 
-	rm -rf pilu.x
+	rm -f pilu
